@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al Farg'oniy - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #7c3aed;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #3b82f6;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --white: #ffffff;
+            --gray: #64748b;
+            --gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --gradient-dark: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --gradient-purple: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+            --gradient-green: linear-gradient(135deg, #10b981 0%, #84cc16 100%);
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 10px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, #f0f4ff 0%, #fdf4ff 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 200%;
+            animation: gradientShift 6s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform: perspective(1000px) rotateY(0deg);
+            transition: transform 0.5s ease;
+        }
+
+        .login-container:hover {
+            transform: perspective(1000px) rotateY(5deg);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-logo-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .login-logo-icon:hover {
+            transform: rotateY(20deg) scale(1.1);
+        }
+
+        .login-title {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .login-subtitle {
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            width: 100%;
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            background: var(--gradient-dark);
+            transform: translateY(-3px) translateZ(20px);
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: gap 0.3s ease;
+        }
+
+        .back-home:hover {
+            gap: 12px;
+        }
+
+        /* Admin Container */
+        .admin-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .admin-sidebar {
+            width: 260px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+
+        .admin-logo {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .admin-logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .admin-logo-icon:hover {
+            transform: rotateY(180deg);
+        }
+
+        .admin-logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .admin-user {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .admin-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            font-weight: bold;
+            transform-style: preserve-3d;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotateY(0deg); }
+            50% { transform: translateY(-10px) rotateY(10deg); }
+        }
+
+        .admin-nav {
+            padding: 20px;
+        }
+
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .admin-nav-item:hover {
+            background: linear-gradient(90deg, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%);
+            color: var(--primary);
+            transform: translateX(10px) translateZ(10px);
+        }
+
+        .admin-nav-item.active {
+            background: linear-gradient(90deg, rgba(79, 70, 229, 0.15) 0%, rgba(79, 70, 229, 0.1) 100%);
+            color: var(--primary);
+        }
+
+        .admin-nav-item.active::before {
+            transform: scaleY(1);
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--danger);
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            min-width: 20px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Main Content */
+        .admin-main {
+            margin-left: 260px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .admin-header {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        .admin-title {
+            font-size: 28px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .admin-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-search {
+            position: relative;
+        }
+
+        .admin-search input {
+            padding: 10px 40px 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius);
+            font-size: 14px;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-search input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .admin-search i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .admin-notification {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--gray);
+            transition: transform 0.3s ease;
+        }
+
+        .admin-notification:hover {
+            transform: rotate(15deg) scale(1.1);
+            color: var(--primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 50%;
+            min-width: 18px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        /* Stats Cards */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .admin-stat-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .admin-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .admin-stat-card:hover {
+            transform: translateY(-10px) rotateX(5deg) translateZ(20px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .admin-stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .admin-stat-icon:hover {
+            transform: rotateY(180deg);
+        }
+
+        .students { background: var(--gradient-blue); }
+        .applications { background: var(--gradient-purple); }
+        .grades { background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); }
+        .courses { background: var(--gradient-green); }
+
+        .admin-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .admin-stat-label {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .admin-stat-change {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .admin-stat-change.positive {
+            color: var(--success);
+        }
+
+        .admin-stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* Applications Section */
+        .applications-section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .applications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: var(--dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .applications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .application-card {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .application-card:hover {
+            transform: translateX(10px) translateZ(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .application-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .application-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .student-name {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .student-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .student-avatar:hover {
+            transform: rotateY(360deg);
+        }
+
+        .application-status {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+
+        .status-approved {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+        }
+
+        .application-details {
+            margin: 15px 0;
+            color: var(--gray);
+        }
+
+        .application-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-success {
+            background: var(--gradient-green);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) translateZ(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tables */
+        .students-table {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th {
+            background: var(--light);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.3s ease;
+        }
+
+        tr:hover td {
+            background: linear-gradient(90deg, rgba(79, 70, 229, 0.05) 0%, rgba(79, 70, 229, 0.02) 100%);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+            animation: modalIn 0.3s ease-out;
+            transform-style: preserve-3d;
+            transform: perspective(1000px) rotateX(0deg);
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: perspective(1000px) rotateX(-15deg) translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: perspective(1000px) rotateX(0deg) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+            color: var(--danger);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        /* Pages */
+        .admin-page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .admin-page.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .admin-sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .admin-main {
+                margin-left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .admin-search input {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-main {
+                padding: 20px;
+            }
+            
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-search input {
+                width: 150px;
+            }
+            
+            .login-container {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .admin-header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .admin-search input {
+                width: 100%;
+            }
+            
+            .application-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-logo">
+                <div class="login-logo-icon">AF</div>
+                <h1 class="login-title">Al Farg'oniy</h1>
+                <p class="login-subtitle">Admin Panelga xush kelibsiz</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Login</label>
+                    <input type="text" class="form-control" id="username" placeholder="Foydalanuvchi nomi" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Parol</label>
+                    <input type="password" class="form-control" id="password" placeholder="Parol" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Kirish
+                </button>
+            </form>
+            
+            <a href="#" class="back-home">
+                <i class="fas fa-arrow-left"></i> Bosh sahifaga qaytish
+            </a>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-container" id="adminContainer">
+        <!-- Sidebar -->
+        <div class="admin-sidebar" id="sidebar">
+            <div class="admin-logo">
+                <div class="admin-logo-icon">AF</div>
+                <div class="admin-logo-text">Al Farg'oniy</div>
+            </div>
+            
+            <div class="admin-user">
+                <div class="admin-avatar">AD</div>
+                <div class="user-info">
+                    <h3>Admin User</h3>
+                    <p style="color: var(--gray); font-size: 14px;">Super Admin</p>
+                </div>
+            </div>
+            
+            <div class="admin-nav">
+                <button class="admin-nav-item active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </button>
+                
+                <button class="admin-nav-item" data-page="applications">
+                    <i class="fas fa-file-alt"></i>
+                    Arizalar
+                    <span class="nav-badge" id="newApplications">3</span>
+                </button>
+                
+                <button class="admin-nav-item" data-page="students">
+                    <i class="fas fa-users"></i>
+                    O'quvchilar
+                </button>
+                
+                <button class="admin-nav-item" data-page="grades">
+                    <i class="fas fa-star"></i>
+                    Baholash
+                </button>
+                
+                <button class="admin-nav-item" data-page="courses">
+                    <i class="fas fa-book"></i>
+                    Kurslar
+                </button>
+                
+                <button class="admin-nav-item" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Chiqish
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <!-- Header -->
+            <div class="admin-header">
+                <div>
+                    <h1 class="admin-title" id="pageTitle">Dashboard</h1>
+                    <div class="date-time" id="currentDateTime"></div>
+                </div>
+                
+                <div class="admin-header-actions">
+                    <div class="admin-search">
+                        <input type="text" placeholder="Qidirish...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    
+                    <div class="admin-notification">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="admin-page active">
+                <!-- Stats -->
+                <div class="admin-stats">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-header">
+                            <div class="admin-stat-icon applications">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="admin-stat-change positive">
+                                <i class="fas fa-arrow-up"></i> 12%
+                            </div>
+                        </div>
+                        <div class="admin-stat-value" id="totalApplications">8</div>
+                        <div class="admin-stat-label">Yangi arizalar</div>
+                    </div>
+                    
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-header">
+                            <div class="admin-stat-icon students">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="admin-stat-change positive">
+                                <i class="fas fa-arrow-up"></i> 5%
+                            </div>
+                        </div>
+                        <div class="admin-stat-value" id="totalStudents">124</div>
+                        <div class="admin-stat-label">O'quvchilar</div>
+                    </div>
+                    
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-header">
+                            <div class="admin-stat-icon grades">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="admin-stat-change positive">
+                                <i class="fas fa-arrow-up"></i> 3%
+                            </div>
+                        </div>
+                        <div class="admin-stat-value">4.7</div>
+                        <div class="admin-stat-label">O'rtacha baho</div>
+                    </div>
+                    
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-header">
+                            <div class="admin-stat-icon courses">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="admin-stat-change positive">
+                                <i class="fas fa-arrow-up"></i> 8%
+                            </div>
+                        </div>
+                        <div class="admin-stat-value">12</div>
+                        <div class="admin-stat-label">Faol kurslar</div>
+                    </div>
+                </div>
+
+                <!-- Recent Applications -->
+                <div class="applications-section">
+                    <div class="applications-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-clock"></i>
+                            So'nggi arizalar
+                        </h2>
+                        <button class="btn btn-primary" onclick="showAllApplications()">
+                            Barchasini ko'rish
+                        </button>
+                    </div>
+                    
+                    <div class="applications-list" id="recentApplications">
+                        <!-- Applications will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applications Page -->
+            <div id="applicationsPage" class="admin-page">
+                <div class="applications-section">
+                    <div class="applications-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-file-alt"></i>
+                            Barcha arizalar
+                        </h2>
+                        <div class="filter-controls">
+                            <select id="filterStatus" class="form-control" style="margin-right: 10px;">
+                                <option value="all">Barchasi</option>
+                                <option value="pending">Kutilmoqda</option>
+                                <option value="approved">Tasdiqlangan</option>
+                                <option value="rejected">Rad etilgan</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="filterApplications()">
+                                <i class="fas fa-filter"></i> Filtrlash
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="students-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ism</th>
+                                    <th>Kurs</th>
+                                    <th>Telefon</th>
+                                    <th>Holati</th>
+                                    <th>Vaqti</th>
+                                    <th>Harakatlar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="applicationsTable">
+                                <!-- Applications table will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Page -->
+            <div id="studentsPage" class="admin-page">
+                <div class="applications-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-users"></i>
+                        O'quvchilar ro'yxati
+                    </h2>
+                    
+                    <div class="students-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ism</th>
+                                    <th>Kurs</th>
+                                    <th>Guruh</th>
+                                    <th>O'rtacha baho</th>
+                                    <th>Qo'shilgan sana</th>
+                                    <th>Holati</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="student-name">
+                                            <div class="student-avatar">JD</div>
+                                            Jamshid Davronov
+                                        </div>
+                                    </td>
+                                    <td>Python</td>
+                                    <td>102</td>
+                                    <td>4.8</td>
+                                    <td>15.01.2024</td>
+                                    <td><span class="status-approved">Faol</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grades Page -->
+            <div id="gradesPage" class="admin-page">
+                <div class="applications-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-star"></i>
+                        Baholash tizimi
+                    </h2>
+                    
+                    <div class="students-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>O'quvchi</th>
+                                    <th>Kurs</th>
+                                    <th>1-chorak</th>
+                                    <th>2-chorak</th>
+                                    <th>3-chorak</th>
+                                    <th>4-chorak</th>
+                                    <th>O'rtacha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="student-name">
+                                            <div class="student-avatar">JD</div>
+                                            Jamshid Davronov
+                                        </div>
+                                    </td>
+                                    <td>Python</td>
+                                    <td><input type="number" class="grade-input" value="5" min="1" max="5"></td>
+                                    <td><input type="number" class="grade-input" value="4" min="1" max="5"></td>
+                                    <td><input type="number" class="grade-input" value="5" min="1" max="5"></td>
+                                    <td><input type="number" class="grade-input" value="4" min="1" max="5"></td>
+                                    <td>4.5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses Page -->
+            <div id="coursesPage" class="admin-page">
+                <div class="applications-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-book"></i>
+                        Kurslar
+                    </h2>
+                    
+                    <div class="students-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kurs nomi</th>
+                                    <th>O'qituvchi</th>
+                                    <th>O'quvchilar</th>
+                                    <th>Davomiylik</th>
+                                    <th>Narxi</th>
+                                    <th>Holati</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Python dasturlash</td>
+                                    <td>Abdulloh Davronov</td>
+                                    <td>42</td>
+                                    <td>3 oy</td>
+                                    <td>500,000 UZS</td>
+                                    <td><span class="status-approved">Faol</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="applicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ariza ma'lumotlari</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="applicationDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        // Demo data
+        const applications = [
+            {
+                id: 1,
+                name: "Ali Nematov",
+                course: "Python",
+                phone: "+998901112233",
+                status: "pending",
+                date: "Bugun 10:30",
+                email: "ali@example.com",
+                avatar: "AN"
+            },
+            {
+                id: 2,
+                name: "Shahnoza Nurmatova",
+                course: "Ingliz tili",
+                phone: "+998902223344",
+                status: "pending",
+                date: "2 soat oldin",
+                email: "shahnoza@example.com",
+                avatar: "SN"
+            },
+            {
+                id: 3,
+                name: "Javohir Rustamov",
+                course: "Matematika",
+                phone: "+998903334455",
+                status: "approved",
+                date: "Kecha 16:45",
+                email: "javohir@example.com",
+                avatar: "JR"
+            }
+        ];
+
+        // DOM Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const adminContainer = document.getElementById('adminContainer');
+        const loginForm = document.getElementById('loginForm');
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const navItems = document.querySelectorAll('.admin-nav-item[data-page]');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check login
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                showAdminPanel();
+            }
+            
+            // Set date time
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+            
+            // Load applications
+            loadRecentApplications();
+            loadApplicationsTable();
+            
+            // Event listeners
+            setupEventListeners();
+            
+            // Initialize animations
+            gsap.from('.admin-stat-card', {
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                stagger: 0.2,
+                ease: "back.out(1.7)"
+            });
+        });
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Login form
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                if (username === 'admin' && password === 'admin123') {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    showAdminPanel();
+                    
+                    // Animate login
+                    gsap.from('.admin-container', {
+                        duration: 1,
+                        y: 100,
+                        opacity: 0,
+                        ease: "power4.out"
+                    });
+                } else {
+                    // Shake animation for error
+                    gsap.to(loginForm, {
+                        duration: 0.5,
+                        x: [-10, 10, -10, 10, 0],
+                        ease: "power1.out"
+                    });
+                    alert('Noto\'g\'ri login yoki parol!');
+                }
+            });
+
+            // Mobile menu
+            mobileMenuBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                gsap.to(sidebar, {
+                    duration: 0.3,
+                    x: sidebar.classList.contains('active') ? 0 : -260,
+                    ease: "power3.out"
+                });
+            });
+
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const page = this.dataset.page;
+                    
+                    // Update active nav
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show page
+                    showPage(page);
+                    
+                    // Close mobile menu
+                    if (window.innerWidth <= 1024) {
+                        sidebar.classList.remove('active');
+                        gsap.to(sidebar, {
+                            duration: 0.3,
+                            x: -260,
+                            ease: "power3.out"
+                        });
+                    }
+                    
+                    // Animate page
+                    gsap.from(`#${page}Page`, {
+                        duration: 0.5,
+                        y: 30,
+                        opacity: 0,
+                        ease: "power3.out"
+                    });
+                });
+            });
+
+            // Logout
+            logoutBtn.addEventListener('click', function() {
+                if (confirm('Chiqishni istaysizmi?')) {
+                    localStorage.removeItem('isLoggedIn');
+                    hideAdminPanel();
+                }
+            });
+        }
+
+        // Show admin panel
+        function showAdminPanel() {
+            loginScreen.style.display = 'none';
+            adminContainer.style.display = 'block';
+            document.getElementById('pageTitle').textContent = 'Dashboard';
+        }
+
+        // Hide admin panel
+        function hideAdminPanel() {
+            adminContainer.style.display = 'none';
+            loginScreen.style.display = 'flex';
+            loginForm.reset();
+        }
+
+        // Update date time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('currentDateTime').textContent = 
+                now.toLocaleDateString('uz-UZ', options);
+        }
+
+        // Show page
+        function showPage(page) {
+            // Update title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'applications': 'Arizalar',
+                'students': 'O\'quvchilar',
+                'grades': 'Baholash',
+                'courses': 'Kurslar'
+            };
+            document.getElementById('pageTitle').textContent = titles[page];
+            
+            // Hide all pages
+            document.querySelectorAll('.admin-page').forEach(pageEl => {
+                pageEl.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(page + 'Page').classList.add('active');
+        }
+
+        // Load recent applications
+        function loadRecentApplications() {
+            const container = document.getElementById('recentApplications');
+            const recentApps = applications.slice(0, 3);
+            
+            container.innerHTML = recentApps.map(app => `
+                <div class="application-card" data-id="${app.id}">
+                    <div class="student-name">
+                        <div class="student-avatar">${app.avatar}</div>
+                        <div>
+                            <strong>${app.name}</strong>
+                            <div style="font-size: 14px; color: var(--gray);">${app.course}</div>
+                        </div>
+                        <span class="application-status status-${app.status}">
+                            ${app.status === 'pending' ? 'Kutilmoqda' : 
+                              app.status === 'approved' ? 'Tasdiqlangan' : 'Rad etilgan'}
+                        </span>
+                    </div>
+                    
+                    <div class="application-details">
+                        <p><strong>Telefon:</strong> ${app.phone}</p>
+                        <p><strong>Vaqt:</strong> ${app.date}</p>
+                    </div>
+                    
+                    ${app.status === 'pending' ? `
+                        <div class="application-actions">
+                            <button class="btn btn-success btn-sm" onclick="approveApplication(${app.id})">
+                                <i class="fas fa-check"></i> Tasdiqlash
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectApplication(${app.id})">
+                                <i class="fas fa-times"></i> Rad etish
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="viewApplication(${app.id})">
+                                <i class="fas fa-eye"></i> Ko'rish
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+            
+            // Update counts
+            const pendingCount = applications.filter(app => app.status === 'pending').length;
+            document.getElementById('totalApplications').textContent = pendingCount;
+            document.getElementById('newApplications').textContent = pendingCount;
+        }
+
+        // Load applications table
+        function loadApplicationsTable(filterStatus = 'all') {
+            const tbody = document.getElementById('applicationsTable');
+            let filteredApps = applications;
+            
+            if (filterStatus !== 'all') {
+                filteredApps = applications.filter(app => app.status === filterStatus);
+            }
+            
+            tbody.innerHTML = filteredApps.map(app => `
+                <tr>
+                    <td>
+                        <div class="student-name">
+                            <div class="student-avatar">${app.avatar}</div>
+                            ${app.name}
+                        </div>
+                    </td>
+                    <td>${app.course}</td>
+                    <td>${app.phone}</td>
+                    <td>
+                        <span class="application-status status-${app.status}">
+                            ${app.status === 'pending' ? 'Kutilmoqda' : 
+                              app.status === 'approved' ? 'Tasdiqlangan' : 'Rad etilgan'}
+                        </span>
+                    </td>
+                    <td>${app.date}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="viewApplication(${app.id})" style="margin-right: 5px;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        ${app.status === 'pending' ? `
+                            <button class="btn btn-success btn-sm" onclick="approveApplication(${app.id})" style="margin-right: 5px;">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectApplication(${app.id})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Application functions
+        function approveApplication(id) {
+            const app = applications.find(a => a.id === id);
+            if (app) {
+                app.status = 'approved';
+                loadRecentApplications();
+                loadApplicationsTable();
+                alert('Ariza tasdiqlandi!');
+                
+                // Animation
+                const card = document.querySelector(`[data-id="${id}"]`);
+                gsap.to(card, {
+                    duration: 0.5,
+                    backgroundColor: "rgba(16, 185, 129, 0.1)",
+                    onComplete: () => {
+                        gsap.to(card, { backgroundColor: "white", duration: 0.5 });
+                    }
+                });
+            }
+        }
+
+        function rejectApplication(id) {
+            const app = applications.find(a => a.id === id);
+            if (app) {
+                app.status = 'rejected';
+                loadRecentApplications();
+                loadApplicationsTable();
+                alert('Ariza rad etildi!');
+                
+                // Animation
+                const card = document.querySelector(`[data-id="${id}"]`);
+                gsap.to(card, {
+                    duration: 0.5,
+                    backgroundColor: "rgba(239, 68, 68, 0.1)",
+                    onComplete: () => {
+                        gsap.to(card, { backgroundColor: "white", duration: 0.5 });
+                    }
+                });
+            }
+        }
+
+        function viewApplication(id) {
+            const app = applications.find(a => a.id === id);
+            if (app) {
+                const modal = document.getElementById('applicationModal');
+                const details = document.getElementById('applicationDetails');
+                
+                details.innerHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <p><strong>Ism:</strong> ${app.name}</p>
+                        <p><strong>Email:</strong> ${app.email}</p>
+                        <p><strong>Telefon:</strong> ${app.phone}</p>
+                        <p><strong>Kurs:</strong> ${app.course}</p>
+                        <p><strong>Holati:</strong> 
+                            <span class="application-status status-${app.status}">
+                                ${app.status === 'pending' ? 'Kutilmoqda' : 
+                                  app.status === 'approved' ? 'Tasdiqlangan' : 'Rad etilgan'}
+                            </span>
+                        </p>
+                        <p><strong>Yozilgan vaqt:</strong> ${app.date}</p>
+                    </div>
+                    
+                    ${app.status === 'pending' ? `
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-success" onclick="approveApplication(${app.id}); closeModal();">
+                                <i class="fas fa-check"></i> Tasdiqlash
+                            </button>
+                            <button class="btn btn-danger" onclick="rejectApplication(${app.id}); closeModal();">
+                                <i class="fas fa-times"></i> Rad etish
+                            </button>
+                        </div>
+                    ` : ''}
+                `;
+                
+                modal.style.display = 'flex';
+                
+                // Animate modal
+                gsap.from('.modal-content', {
+                    duration: 0.5,
+                    scale: 0.8,
+                    opacity: 0,
+                    ease: "back.out(1.7)"
+                });
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('applicationModal');
+            modal.style.display = 'none';
+        }
+
+        // Filter applications
+        function filterApplications() {
+            const status = document.getElementById('filterStatus').value;
+            loadApplicationsTable(status);
+        }
+
+        // Show all applications
+        function showAllApplications() {
+            // Switch to applications page
+            document.querySelector('.admin-nav-item[data-page="applications"]').click();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('applicationModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
